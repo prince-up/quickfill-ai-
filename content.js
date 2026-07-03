@@ -13,6 +13,7 @@
             email: ['email', 'e-mail', 'emailaddress', 'mail'],
             phone: ['phone', 'telephone', 'mobile', 'cell', 'contact', 'number'],
             citizenship: ['citizenship', 'nationality', 'citizen'],
+            gender: ['gender', 'sex'],
             
             address: ['address', 'street', 'address1', 'addr1', 'location'],
             district: ['district', 'county'],
@@ -35,13 +36,15 @@
             projects: ['projects', 'portfolio', 'project details', 'work experience']
         };
 
-        const inputs = document.querySelectorAll('input, select, textarea');
+        const inputs = document.querySelectorAll('input, select, textarea, div[role="radio"], div[role="checkbox"]');
         let filledCount = 0;
 
         inputs.forEach(input => {
             if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') {
                 return;
             }
+
+            const isRadioOrCheckbox = input.type === 'radio' || input.type === 'checkbox' || input.getAttribute('role') === 'radio' || input.getAttribute('role') === 'checkbox';
 
             const name = (input.name || '').toLowerCase();
             const id = (input.id || '').toLowerCase();
@@ -51,25 +54,48 @@
             const combinedText = `${name} ${id} ${placeholder} ${label}`;
 
             for (const [detailKey, keywords] of Object.entries(fieldMappings)) {
-                if (keywords.some(keyword => combinedText.includes(keyword))) {
-                    if (details[detailKey]) {
+                if (details[detailKey] && details[detailKey].trim() !== '') {
+                    
+                    // Special handling for Radio buttons / Checkboxes
+                    if (isRadioOrCheckbox) {
+                        const val = details[detailKey].toLowerCase();
+                        let targetValue = '';
                         
-                        // Focus the element to simulate user interaction
+                        if (input.tagName === 'INPUT') {
+                            targetValue = (input.value || '').toLowerCase();
+                        } else if (input.tagName === 'DIV') {
+                            targetValue = (input.getAttribute('data-value') || input.innerText || '').toLowerCase();
+                        }
+                        
+                        // If the text surrounding the radio group matches the detail key (e.g., "Gender")
+                        // AND the specific radio button matches our stored value (e.g. "Male")
+                        if (keywords.some(keyword => combinedText.includes(keyword)) && targetValue.includes(val)) {
+                            if (input.tagName === 'INPUT') {
+                                input.checked = true;
+                                input.dispatchEvent(new Event('change', { bubbles: true }));
+                            } else if (input.tagName === 'DIV') {
+                                input.click();
+                            }
+                            
+                            if (input.style) {
+                                input.style.border = '2px solid #4f46e5';
+                            }
+                            filledCount++;
+                            break;
+                        }
+                    } 
+                    // Normal text inputs
+                    else if (!isRadioOrCheckbox && keywords.some(keyword => combinedText.includes(keyword))) {
+                        
                         input.focus();
-                        
-                        // Set the value
                         input.value = details[detailKey];
                         
-                        // Dispatch multiple events for React/Angular/Google Forms compatibility
                         input.dispatchEvent(new Event('input', { bubbles: true }));
                         input.dispatchEvent(new Event('change', { bubbles: true }));
                         input.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Enter' }));
                         input.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Enter' }));
-                        
-                        // Blur to trigger validation
                         input.blur();
                         
-                        // Add a visual cue
                         input.style.backgroundColor = '#e8f0fe'; 
                         input.style.border = '2px solid #4f46e5';
                         
@@ -86,18 +112,15 @@
     function getLabelText(input) {
         let text = '';
         
-        // 1. Standard label by ID
         if (input.id) {
             const label = document.querySelector(`label[for="${input.id}"]`);
             if (label) text += ' ' + label.innerText;
         }
         
-        // 2. Wrapping label
         if (input.closest('label')) {
             text += ' ' + input.closest('label').innerText;
         }
         
-        // 3. ARIA attributes (Highly used by Google Forms and modern UI)
         if (input.hasAttribute('aria-label')) {
             text += ' ' + input.getAttribute('aria-label');
         }
@@ -109,13 +132,11 @@
             });
         }
         
-        // 4. Fallback for Google Forms (they use role="listitem" for the whole question container)
         const gContainer = input.closest('div[role="listitem"]');
         if (gContainer) {
             text += ' ' + gContainer.innerText;
         }
 
-        // 5. General parent text fallback if still empty
         if (!text.trim() && input.parentElement) {
             text += ' ' + input.parentElement.innerText;
         }

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const fields = [
-        'fullName', 'email', 'phone', 'citizenship',
+        'fullName', 'email', 'phone', 'citizenship', 'gender',
         'address', 'district', 'city', 'state', 'zipCode', 'country',
         'github', 'linkedin', 'leetcode',
         'collegeName', 'degree', 'cgpa',
