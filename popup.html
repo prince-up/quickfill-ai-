@@ -14,37 +14,112 @@
             <h2>AutoFil</h2>
             <p class="subtitle">Your details securely stored locally.</p>
         </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="personal">Personal</button>
+            <button class="tab-btn" data-tab="location">Location</button>
+            <button class="tab-btn" data-tab="socials">Socials</button>
+            <button class="tab-btn" data-tab="education">Education</button>
+            <button class="tab-btn" data-tab="experience">Experience</button>
+        </div>
+
         <form id="detailsForm">
-            <div class="form-row">
+            <div class="tab-content active" id="tab-personal">
                 <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" placeholder="Jane">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Jane Doe">
                 </div>
                 <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" placeholder="Doe">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="jane@example.com">
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
-            </div>
-            <div class="form-group">
-                <label for="address">Street Address</label>
-                <input type="text" id="address" name="address" placeholder="123 Innovation Way">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="city">City</label>
-                    <input type="text" id="city" name="city" placeholder="Metropolis">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="jane@example.com">
                 </div>
                 <div class="form-group">
-                    <label for="zipCode">Zip Code</label>
-                    <input type="text" id="zipCode" name="zipCode" placeholder="10001">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+                </div>
+                <div class="form-group">
+                    <label for="citizenship">Citizenship</label>
+                    <input type="text" id="citizenship" name="citizenship" placeholder="American">
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-location">
+                <div class="form-group">
+                    <label for="address">Street Address</label>
+                    <input type="text" id="address" name="address" placeholder="123 Innovation Way">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="district">District</label>
+                        <input type="text" id="district" name="district" placeholder="Downtown">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" placeholder="Metropolis">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" placeholder="NY">
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">Pincode / Zip Code</label>
+                        <input type="text" id="zipCode" name="zipCode" placeholder="10001">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" placeholder="USA">
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-socials">
+                <div class="form-group">
+                    <label for="github">GitHub ID / URL</label>
+                    <input type="text" id="github" name="github" placeholder="github.com/janedoe">
+                </div>
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn ID / URL</label>
+                    <input type="text" id="linkedin" name="linkedin" placeholder="linkedin.com/in/janedoe">
+                </div>
+                <div class="form-group">
+                    <label for="leetcode">LeetCode ID / URL</label>
+                    <input type="text" id="leetcode" name="leetcode" placeholder="leetcode.com/janedoe">
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-education">
+                <div class="form-group">
+                    <label for="collegeName">College Name</label>
+                    <input type="text" id="collegeName" name="collegeName" placeholder="University of Technology">
+                </div>
+                <div class="form-group">
+                    <label for="degree">Degree / Bachelor</label>
+                    <input type="text" id="degree" name="degree" placeholder="B.S. Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="cgpa">College CGPA</label>
+                    <input type="text" id="cgpa" name="cgpa" placeholder="3.8">
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-experience">
+                <div class="form-group">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" id="companyName" name="companyName" placeholder="Tech Corp Inc.">
+                </div>
+                <div class="form-group">
+                    <label for="internship">Internship Role</label>
+                    <input type="text" id="internship" name="internship" placeholder="Software Engineer Intern">
+                </div>
+                <div class="form-group">
+                    <label for="internshipDuration">Internship Duration</label>
+                    <input type="text" id="internshipDuration" name="internshipDuration" placeholder="3 months">
+                </div>
+                <div class="form-group">
+                    <label for="projects">Projects</label>
+                    <textarea id="projects" name="projects" placeholder="Developed a full-stack web application..."></textarea>
                 </div>
             </div>
             

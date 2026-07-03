@@ -1,15 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Load saved details when popup opens
+    // Tab switching logic
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent form submission if inside a form
+            
+            // Remove active class from all
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            // Add active class to clicked
+            btn.classList.add('active');
+            const targetId = `tab-${btn.dataset.tab}`;
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    const fields = [
+        'fullName', 'email', 'phone', 'citizenship',
+        'address', 'district', 'city', 'state', 'zipCode', 'country',
+        'github', 'linkedin', 'leetcode',
+        'collegeName', 'degree', 'cgpa',
+        'companyName', 'internship', 'internshipDuration', 'projects'
+    ];
+
+    // Load saved details
     chrome.storage.local.get(['userDetails'], (result) => {
         if (result.userDetails) {
             const details = result.userDetails;
-            document.getElementById('firstName').value = details.firstName || '';
-            document.getElementById('lastName').value = details.lastName || '';
-            document.getElementById('email').value = details.email || '';
-            document.getElementById('phone').value = details.phone || '';
-            document.getElementById('address').value = details.address || '';
-            document.getElementById('city').value = details.city || '';
-            document.getElementById('zipCode').value = details.zipCode || '';
+            fields.forEach(field => {
+                const el = document.getElementById(field);
+                if (el) {
+                    el.value = details[field] || '';
+                }
+            });
         }
     });
 
@@ -17,15 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('detailsForm').addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const userDetails = {
-            firstName: document.getElementById('firstName').value,
-            lastName: document.getElementById('lastName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value,
-            city: document.getElementById('city').value,
-            zipCode: document.getElementById('zipCode').value
-        };
+        const userDetails = {};
+        fields.forEach(field => {
+            const el = document.getElementById(field);
+            if (el) {
+                userDetails[field] = el.value;
+            }
+        });
 
         chrome.storage.local.set({ userDetails }, () => {
             showStatus('Details saved!');

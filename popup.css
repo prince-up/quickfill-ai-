@@ -13,7 +13,7 @@
 
 body {
     font-family: 'Outfit', sans-serif;
-    width: 340px;
+    width: 380px; /* Slightly wider to accommodate tabs */
     margin: 0;
     padding: 0;
     background-color: var(--surface);
@@ -29,7 +29,7 @@ body {
 
 .header {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 h2 {
@@ -48,6 +48,68 @@ h2 {
     color: var(--text-muted);
 }
 
+/* Tabs Styling */
+.tabs {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+    padding-bottom: 2px;
+}
+
+.tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.tabs::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    width: auto;
+}
+
+.tab-btn:hover {
+    color: var(--primary);
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    max-height: 280px; /* Limit height so it's scrollable */
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
 .form-row {
     display: flex;
     gap: 12px;
@@ -58,7 +120,7 @@ h2 {
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 label {
@@ -69,7 +131,7 @@ label {
     color: var(--text-main);
 }
 
-input {
+input, textarea {
     width: 100%;
     padding: 10px 12px;
     background-color: var(--surface);
@@ -81,18 +143,23 @@ input {
     transition: all 0.2s ease;
 }
 
-input::placeholder {
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+input::placeholder, textarea::placeholder {
     color: #9ca3af;
 }
 
-input:focus {
+input:focus, textarea:focus {
     border-color: var(--primary);
     background-color: #ffffff;
     outline: none;
     box-shadow: 0 0 0 3px var(--ring);
 }
 
-button {
+button.btn-save, button.btn-autofill {
     width: 100%;
     padding: 12px;
     border: none;
@@ -108,7 +175,7 @@ button {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button:active {
+button.btn-save:active, button.btn-autofill:active {
     transform: scale(0.98);
 }
 
@@ -116,7 +183,7 @@ button:active {
     background: linear-gradient(135deg, var(--secondary), #059669);
     color: white;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-    margin-top: 8px;
+    margin-top: 12px;
 }
 
 .btn-save:hover {
@@ -127,7 +194,7 @@ button:active {
 .divider {
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 24px 0;
+    margin: 20px 0;
 }
 
 .btn-autofill {
@@ -152,6 +219,7 @@ button:active {
     opacity: 1;
     transform: translateY(0);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 100;
 }
 
 #statusMessage.status-hidden {

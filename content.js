@@ -9,13 +9,30 @@
         
         // A mapping of potential field names/ids to our stored detail keys
         const fieldMappings = {
-            firstName: ['first name', 'firstname', 'fname', 'first_name'],
-            lastName: ['last name', 'lastname', 'lname', 'last_name'],
+            fullName: ['full name', 'fullname', 'name', 'first name', 'last name', 'fname', 'lname'],
             email: ['email', 'e-mail', 'emailaddress', 'mail'],
-            phone: ['phone', 'telephone', 'mobile', 'cell', 'contact'],
+            phone: ['phone', 'telephone', 'mobile', 'cell', 'contact', 'number'],
+            citizenship: ['citizenship', 'nationality', 'citizen'],
+            
             address: ['address', 'street', 'address1', 'addr1', 'location'],
+            district: ['district', 'county'],
             city: ['city', 'town'],
-            zipCode: ['zip', 'zipcode', 'postal', 'postcode']
+            state: ['state', 'province', 'region'],
+            zipCode: ['zip', 'zipcode', 'postal', 'postcode', 'pincode', 'pin code', 'pin'],
+            country: ['country', 'nation'],
+            
+            github: ['github', 'git', 'github id', 'github profile'],
+            linkedin: ['linkedin', 'linkedin id', 'linked in', 'linkedin profile'],
+            leetcode: ['leetcode', 'leet code', 'leetcode id'],
+            
+            collegeName: ['college', 'university', 'institution', 'school', 'institute'],
+            degree: ['degree', 'bachelor', 'major', 'course', 'program', 'graduation'],
+            cgpa: ['cgpa', 'gpa', 'grade point', 'grade', 'percentage'],
+            
+            companyName: ['company', 'employer', 'organization', 'firm'],
+            internship: ['internship', 'role', 'position', 'title', 'job title'],
+            internshipDuration: ['duration', 'period', 'months', 'tenure'],
+            projects: ['projects', 'portfolio', 'project details', 'work experience']
         };
 
         const inputs = document.querySelectorAll('input, select, textarea');
