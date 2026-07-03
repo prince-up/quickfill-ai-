@@ -36,6 +36,7 @@
         };
 
         const inputs = document.querySelectorAll('input, select, textarea');
+        let filledCount = 0;
 
         inputs.forEach(input => {
             if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') {
@@ -52,28 +53,73 @@
             for (const [detailKey, keywords] of Object.entries(fieldMappings)) {
                 if (keywords.some(keyword => combinedText.includes(keyword))) {
                     if (details[detailKey]) {
+                        
+                        // Focus the element to simulate user interaction
+                        input.focus();
+                        
+                        // Set the value
                         input.value = details[detailKey];
-                        // Dispatch event so frameworks like React recognize the change
+                        
+                        // Dispatch multiple events for React/Angular/Google Forms compatibility
                         input.dispatchEvent(new Event('input', { bubbles: true }));
                         input.dispatchEvent(new Event('change', { bubbles: true }));
+                        input.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Enter' }));
+                        input.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Enter' }));
+                        
+                        // Blur to trigger validation
+                        input.blur();
                         
                         // Add a visual cue
                         input.style.backgroundColor = '#e8f0fe'; 
+                        input.style.border = '2px solid #4f46e5';
+                        
+                        filledCount++;
                         break;
                     }
                 }
             }
         });
+        
+        console.log(`AutoFill completed: Filled ${filledCount} fields.`);
     });
 
     function getLabelText(input) {
+        let text = '';
+        
+        // 1. Standard label by ID
         if (input.id) {
             const label = document.querySelector(`label[for="${input.id}"]`);
-            if (label) return label.innerText;
+            if (label) text += ' ' + label.innerText;
         }
+        
+        // 2. Wrapping label
         if (input.closest('label')) {
-            return input.closest('label').innerText;
+            text += ' ' + input.closest('label').innerText;
         }
-        return '';
+        
+        // 3. ARIA attributes (Highly used by Google Forms and modern UI)
+        if (input.hasAttribute('aria-label')) {
+            text += ' ' + input.getAttribute('aria-label');
+        }
+        if (input.hasAttribute('aria-labelledby')) {
+            const ids = input.getAttribute('aria-labelledby').split(' ');
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) text += ' ' + el.innerText;
+            });
+        }
+        
+        // 4. Fallback for Google Forms (they use role="listitem" for the whole question container)
+        const gContainer = input.closest('div[role="listitem"]');
+        if (gContainer) {
+            text += ' ' + gContainer.innerText;
+        }
+
+        // 5. General parent text fallback if still empty
+        if (!text.trim() && input.parentElement) {
+            text += ' ' + input.parentElement.innerText;
+        }
+        
+        return text;
     }
 })();
