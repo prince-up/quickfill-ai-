@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "AutoFill Extension",
+  "version": "1.0",
+  "description": "Automatically fill out web forms with your details.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Open AutoFill"
+  }
+}
