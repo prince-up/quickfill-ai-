@@ -7,13 +7,18 @@
 
         const details = result.userDetails;
         
-        // A mapping of potential field names/ids to our stored detail keys
+        // Field mappings sorted by specific first to prevent false matches 
+        // e.g. company name should map before just name
         const fieldMappings = {
+            companyName: ['company name', 'company', 'employer', 'organization', 'firm'],
+            collegeName: ['college name', 'university name', 'college', 'university', 'institution', 'school', 'institute'],
             fullName: ['full name', 'fullname', 'name', 'first name', 'last name', 'fname', 'lname'],
+            
             email: ['email', 'e-mail', 'emailaddress', 'mail'],
             phone: ['phone', 'telephone', 'mobile', 'cell', 'contact', 'number'],
-            citizenship: ['citizenship', 'nationality', 'citizen'],
             gender: ['gender', 'sex'],
+            citizenship: ['citizenship', 'nationality', 'citizen'],
+            dob: ['dob', 'date of birth', 'birth date'],
             
             address: ['address', 'street', 'address1', 'addr1', 'location'],
             district: ['district', 'county'],
@@ -24,16 +29,26 @@
             
             github: ['github', 'git', 'github id', 'github profile'],
             linkedin: ['linkedin', 'linkedin id', 'linked in', 'linkedin profile'],
+            portfolio: ['portfolio', 'website', 'personal site'],
             leetcode: ['leetcode', 'leet code', 'leetcode id'],
             
-            collegeName: ['college', 'university', 'institution', 'school', 'institute'],
             degree: ['degree', 'bachelor', 'major', 'course', 'program', 'graduation'],
+            specialization: ['specialization', 'stream', 'branch', 'department'],
             cgpa: ['cgpa', 'gpa', 'grade point', 'grade', 'percentage'],
+            graduationYear: ['graduation year', 'grad year', 'passing year', 'year of passing'],
             
-            companyName: ['company', 'employer', 'organization', 'firm'],
             internship: ['internship', 'role', 'position', 'title', 'job title'],
             internshipDuration: ['duration', 'period', 'months', 'tenure'],
-            projects: ['projects', 'portfolio', 'project details', 'work experience']
+            projects: ['projects', 'project details', 'work experience'],
+            
+            skills: ['skills', 'technologies', 'tools', 'tech stack'],
+            achievements: ['achievements', 'awards', 'honors'],
+            certifications: ['certifications', 'certificates', 'courses'],
+            
+            expectedCTC: ['expected ctc', 'expected salary', 'compensation'],
+            noticePeriod: ['notice period', 'availability', 'joining time'],
+            preferredLocations: ['preferred locations', 'preferred city', 'relocation'],
+            commonAnswers: ['why join', 'cover letter', 'additional info', 'about you']
         };
 
         const inputs = document.querySelectorAll('input, select, textarea, div[role="radio"], div[role="checkbox"]');
@@ -53,39 +68,22 @@
 
             const combinedText = `${name} ${id} ${placeholder} ${label}`;
 
+            // Strict word boundary matching check function
+            const hasKeywordMatch = (keywords, text) => {
+                return keywords.some(keyword => {
+                    // Escape special characters if any
+                    const safeKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    // Create regex with word boundaries
+                    const regex = new RegExp(`\\b${safeKeyword}\\b`, 'i');
+                    return regex.test(text);
+                });
+            };
+
             for (const [detailKey, keywords] of Object.entries(fieldMappings)) {
                 if (details[detailKey] && details[detailKey].trim() !== '') {
                     
-                    // Special handling for Radio buttons / Checkboxes
-                    if (isRadioOrCheckbox) {
-                        const val = details[detailKey].toLowerCase();
-                        let targetValue = '';
-                        
-                        if (input.tagName === 'INPUT') {
-                            targetValue = (input.value || '').toLowerCase();
-                        } else if (input.tagName === 'DIV') {
-                            targetValue = (input.getAttribute('data-value') || input.innerText || '').toLowerCase();
-                        }
-                        
-                        // If the text surrounding the radio group matches the detail key (e.g., "Gender")
-                        // AND the specific radio button matches our stored value (e.g. "Male")
-                        if (keywords.some(keyword => combinedText.includes(keyword)) && targetValue.includes(val)) {
-                            if (input.tagName === 'INPUT') {
-                                input.checked = true;
-                                input.dispatchEvent(new Event('change', { bubbles: true }));
-                            } else if (input.tagName === 'DIV') {
-                                input.click();
-                            }
-                            
-                            if (input.style) {
-                                input.style.border = '2px solid #4f46e5';
-                            }
-                            filledCount++;
-                            break;
-                        }
-                    } 
                     // Normal text inputs
-                    else if (!isRadioOrCheckbox && keywords.some(keyword => combinedText.includes(keyword))) {
+                    if (!isRadioOrCheckbox && hasKeywordMatch(keywords, combinedText)) {
                         
                         input.focus();
                         input.value = details[detailKey];
@@ -96,11 +94,44 @@
                         input.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Enter' }));
                         input.blur();
                         
-                        input.style.backgroundColor = '#e8f0fe'; 
-                        input.style.border = '2px solid #4f46e5';
+                        input.style.backgroundColor = 'rgba(168, 85, 247, 0.1)'; 
+                        input.style.border = '2px solid #a855f7';
                         
                         filledCount++;
                         break;
+                    }
+                    // Special handling for Radio buttons / Checkboxes
+                    else if (isRadioOrCheckbox) {
+                        const val = details[detailKey].toLowerCase();
+                        let targetValue = '';
+                        
+                        if (input.tagName === 'INPUT') {
+                            targetValue = (input.value || '').toLowerCase();
+                            // Fallback to reading adjacent text for radio buttons missing value attributes
+                            if (!targetValue || targetValue === 'on') {
+                                const nextSibling = input.nextSibling;
+                                if (nextSibling && nextSibling.nodeType === 3) { // Text node
+                                    targetValue = nextSibling.textContent.toLowerCase();
+                                }
+                            }
+                        } else if (input.tagName === 'DIV') {
+                            targetValue = (input.getAttribute('data-value') || input.innerText || '').toLowerCase();
+                        }
+                        
+                        if (hasKeywordMatch(keywords, combinedText) && targetValue.includes(val)) {
+                            if (input.tagName === 'INPUT') {
+                                input.checked = true;
+                                input.dispatchEvent(new Event('change', { bubbles: true }));
+                            } else if (input.tagName === 'DIV') {
+                                input.click();
+                            }
+                            
+                            if (input.style) {
+                                input.style.border = '2px solid #a855f7';
+                            }
+                            filledCount++;
+                            break;
+                        }
                     }
                 }
             }
