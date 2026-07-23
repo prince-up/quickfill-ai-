@@ -30,16 +30,43 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // 2. Safe Loading Details
+    const defaultData = {
+        fullName: "Prince Yadav",
+        email: "princeyadav76001@gmail.com",
+        phone: "+91-7986614646",
+        citizenship: "Indian",
+        gender: "Male",
+        address: "Phagwara, Punjab, India",
+        district: "",
+        city: "Phagwara",
+        state: "Punjab",
+        zipCode: "144411",
+        country: "India",
+        github: "https://github.com/prince-up",
+        linkedin: "https://linkedin.com/in/prince-yadav-4t",
+        leetcode: "",
+        collegeName: "Lovely Professional University",
+        degree: "Bachelor of Technology",
+        cgpa: "6.62",
+        companyName: "WorldWin Coder Pvt. Ltd.",
+        internship: "Software Engineering Intern",
+        internshipDuration: "3 Months",
+        projects: "MarketMind AI, HireMind AI, Cold Mail Agent, AstraLMS"
+    };
+
     try {
         chrome.storage.local.get(['userDetails'], (result) => {
-            if (result.userDetails) {
-                const details = result.userDetails;
-                fields.forEach(field => {
-                    const el = document.getElementById(field);
-                    if (el) {
-                        el.value = details[field] || '';
-                    }
-                });
+            const details = result.userDetails || defaultData;
+            fields.forEach(field => {
+                const el = document.getElementById(field);
+                if (el) {
+                    el.value = details[field] || '';
+                }
+            });
+            
+            // Save defaults to storage if it's empty
+            if (!result.userDetails) {
+                chrome.storage.local.set({ userDetails: defaultData });
             }
         });
     } catch(err) {
